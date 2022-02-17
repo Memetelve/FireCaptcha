@@ -7,7 +7,7 @@ README_MD  =  open(join(dirname(abspath(__file__)), "README.md")).read()
 
 setup(
     name = "FireCaptcha",
-    version = "0.0.2",
+    version = "0.0.2.1",
     packages = ['FireCaptcha'],
     description = "Highly customizable captcha generator, written in python",
     long_description = README_MD,
