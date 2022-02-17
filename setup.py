@@ -9,7 +9,7 @@ setup(
     name = "FireCaptcha",
     version = "0.0.2",
     packages = ['FireCaptcha'],
-    description = "Highly customizable captcha generator",
+    description = "Highly customizable captcha generator, written in python",
     long_description = README_MD,
     long_description_content_type = "text/markdown",
     url = "https://github.com/Memetelve/FireCaptcha",
