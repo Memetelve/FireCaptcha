@@ -37,8 +37,13 @@ class Captcha:
         self.misleading_dots = misleading_dots
         self.misleading_color = misleading_color
 
-        self.image = 0
-        self.answer = 0
+        if self.bg_color.lower() == 'random':
+            self.bg_color = '#' + ''.join([random.choice('0123456789ABCDEF') for _ in range(6)])
+        if self.gradient.lower() == 'random':
+            self.gradient = '#' + ''.join([random.choice('0123456789ABCDEF') for _ in range(6)])
+
+        self.image = None
+        self.answer = None
 
     def generate_gradient(
         self, colour1: str, colour2: str, width: int, height: int) -> Image:
@@ -104,7 +109,14 @@ class Captcha:
             font = ImageFont.truetype('arial', font_size)
             #draw char
             draw = ImageDraw.Draw(image)
-            draw.text((x, y), char, self.char_color, font)
+
+            if self.char_color.lower() == 'random':
+                #generate random hex color
+                color = '#' + ''.join([random.choice('0123456789ABCDEF') for _ in range(6)])
+
+                draw.text((x, y), char, color, font)
+            else:
+                draw.text((x, y), char, self.char_color, font)
 
         if self.misleading_lines > 0:
             for _ in range(self.misleading_lines):
@@ -112,14 +124,24 @@ class Captcha:
                 y1 = random.randint(0, self.height)
                 x2 = random.randint(0, self.width)
                 y2 = random.randint(0, self.height)
-                draw.line((x1, y1, x2, y2), fill=self.misleading_color, width=4)
+
+                if self.misleading_color.lower() == 'random':
+                    color = '#' + ''.join([random.choice('0123456789ABCDEF') for _ in range(6)])
+                    draw.line((x1, y1, x2, y2), fill=color, width=4)
+                else:
+                    draw.line((x1, y1, x2, y2), fill=self.misleading_color, width=4)
 
         if self.misleading_dots > 0:
             for _ in range(self.misleading_dots):
                 x = random.randint(0, self.width)
                 y = random.randint(0, self.height)
                 radius = random.randint(0, self.width / 30)
-                draw.ellipse((x, y, x+radius, y+radius), fill=self.misleading_color)
+
+                if self.misleading_color.lower() == 'random':
+                    color = '#' + ''.join([random.choice('0123456789ABCDEF') for _ in range(6)])
+                    draw.ellipse((x, y, x + radius, y + radius), fill=color)
+                else:
+                    draw.ellipse((x, y, x + radius, y + radius), fill=self.misleading_color)
 
         return FinishedCaptcha(image, answer)
 
