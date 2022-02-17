@@ -28,7 +28,7 @@ p = Captcha(width=600,
             char_color='#13cdc7',
             char_type=3,
             bg_color='#000',
-            gradient_color='#13c',
+            gradient='#13c',
             misleading_lines=3,
             misleading_dots=20,
             misleading_color='#444444')
