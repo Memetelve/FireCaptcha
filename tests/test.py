@@ -1,16 +1,16 @@
-from FireCaptcha import Captcha
+from FireCaptcha import ImageCaptcha
 
 #initialize captcha instance, specify captcha parameters
-p = Captcha(width=600,
+p = ImageCaptcha(width=600,
             height=200,
-            char_number=10,
+            char_number=6,
             char_color='random',
             char_type=1,
             gradient='random',
             bg_color='random',
             misleading_color='random',
-            misleading_lines=20,
-            misleading_dots=200,)
+            misleading_lines=5,
+            misleading_dots=70,)
 
 #generate captcha, no parameters needed
 captcha = p.Generate()

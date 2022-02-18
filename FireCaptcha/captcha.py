@@ -14,7 +14,7 @@ class FinishedCaptcha():
         self.answer = answer
 
 
-class Captcha:
+class ImageCaptcha:
     def __init__(self,
                 width: int = 300,
                 height: int = 100,
@@ -76,10 +76,65 @@ class Captcha:
 
         return x, y
 
+    def draw_chars(self, chars, image):
+        answer = ''
+        for i in range(self.char_number):
+            char = random.choice(chars)
+
+            answer += char
+
+            font_size = random.randint(self.height * 0.3, self.height * 0.4)
+
+            x, y = ImageCaptcha.generate_position(self, i, font_size)
 
 
+            font = ImageFont.truetype('arial', font_size)
+            #draw char
+            draw = ImageDraw.Draw(image)
 
-    def Generate(self):
+            if self.char_color.lower() == 'random':
+                #generate random hex color
+                color = '#' + ''.join([random.choice('0123456789ABCDEF') for _ in range(6)])
+
+                draw.text((x, y), char, color, font)
+            else:
+                draw.text((x, y), char, self.char_color, font)
+
+        return answer
+
+    def draw_misleading_lines(self, image):
+        if self.misleading_lines <= 0:
+            return
+        draw = ImageDraw.Draw(image)
+        for _ in range(self.misleading_lines):
+            x1 = random.randint(0, self.width)
+            y1 = random.randint(0, self.height)
+            x2 = random.randint(0, self.width)
+            y2 = random.randint(0, self.height)
+
+            if self.misleading_color.lower() == 'random':
+                color = '#' + ''.join([random.choice('0123456789ABCDEF') for _ in range(6)])
+                draw.line((x1, y1, x2, y2), fill=color, width=4)
+            else:
+                draw.line((x1, y1, x2, y2), fill=self.misleading_color, width=4)
+
+    def draw_misleading_dots(self, image):
+        if self.misleading_dots <= 0:
+            return
+        draw = ImageDraw.Draw(image)
+        for _ in range(self.misleading_dots):
+            x = random.randint(0, self.width)
+            y = random.randint(0, self.height)
+            radius = random.randint(0, self.width / 30)
+
+            if self.misleading_color.lower() == 'random':
+                color = '#' + ''.join([random.choice('0123456789ABCDEF') for _ in range(6)])
+                draw.ellipse((x, y, x + radius, y + radius), fill=color)
+            else:
+                draw.ellipse((x, y, x + radius, y + radius), fill=self.misleading_color)
+
+
+    def Generate(self) -> FinishedCaptcha:
         if self.gradient:
             image = self.generate_gradient(
                 self.gradient, self.bg_color, self.width, self.height)
@@ -95,53 +150,11 @@ class Captcha:
         elif self.char_type == 4:
             chars = '0123456789'
 
-        answer = ''
-        for i in range(self.char_number):
-            char = random.choice(chars)
+        answer = ImageCaptcha.draw_chars(self, chars, image)
 
-            answer += char
+        ImageCaptcha.draw_misleading_lines(self, image)
 
-            font_size = random.randint(self.height * 0.3, self.height * 0.4)
-
-            x, y = Captcha.generate_position(self, i, font_size)
-
-
-            font = ImageFont.truetype('arial', font_size)
-            #draw char
-            draw = ImageDraw.Draw(image)
-
-            if self.char_color.lower() == 'random':
-                #generate random hex color
-                color = '#' + ''.join([random.choice('0123456789ABCDEF') for _ in range(6)])
-
-                draw.text((x, y), char, color, font)
-            else:
-                draw.text((x, y), char, self.char_color, font)
-
-        if self.misleading_lines > 0:
-            for _ in range(self.misleading_lines):
-                x1 = random.randint(0, self.width)
-                y1 = random.randint(0, self.height)
-                x2 = random.randint(0, self.width)
-                y2 = random.randint(0, self.height)
-
-                if self.misleading_color.lower() == 'random':
-                    color = '#' + ''.join([random.choice('0123456789ABCDEF') for _ in range(6)])
-                    draw.line((x1, y1, x2, y2), fill=color, width=4)
-                else:
-                    draw.line((x1, y1, x2, y2), fill=self.misleading_color, width=4)
-
-        if self.misleading_dots > 0:
-            for _ in range(self.misleading_dots):
-                x = random.randint(0, self.width)
-                y = random.randint(0, self.height)
-                radius = random.randint(0, self.width / 30)
-
-                if self.misleading_color.lower() == 'random':
-                    color = '#' + ''.join([random.choice('0123456789ABCDEF') for _ in range(6)])
-                    draw.ellipse((x, y, x + radius, y + radius), fill=color)
-                else:
-                    draw.ellipse((x, y, x + radius, y + radius), fill=self.misleading_color)
+        ImageCaptcha.draw_misleading_dots(self, image)
 
         return FinishedCaptcha(image, answer)
 
