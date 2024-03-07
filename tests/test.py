@@ -1,26 +1,18 @@
-from FireCaptcha import ImageCaptcha
+from captcha import ImageCaptcha
 
-#initialize captcha instance, specify captcha parameters
-p = ImageCaptcha(width=600,
-            height=200,
-            char_number=6,
-            char_color='random',
-            char_type=1,
-            gradient='random',
-            bg_color='random',
-            misleading_color='random',
-            misleading_lines=5,
-            misleading_dots=70,)
+image = ImageCaptcha.Generate(
+    width=300,
+    height=100,
+    char_number=4,
+    char_color="#ffffff",
+    char_type=1,
+    bg_color="#000000",
+    bg_color_2="",
+    misleading_lines=0,
+    misleading_dots=0,
+    misleading_color="random",
+)
 
-#generate captcha, no parameters needed
-captcha = p.Generate()
 
-#assign image and answer to separate variable
-image = captcha.image
-answer = captcha.answer
-
-#saves image to file
-image.save('images/test.png')
-
-#prints answer to the captcha
-print(answer)
+print(image.answer)
+image.image.save("test.png")
